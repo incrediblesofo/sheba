@@ -1,0 +1,37 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Song Approved{% endblock %}
+
+{% block content %}
+<h1>Great News! 🎉</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Your song has been reviewed and <strong style="color: #4CAF50;">approved</strong>!
+  It's now live on Sheba Sound and available for listeners to enjoy.
+</p>
+
+<div class="info-box">
+  <p><strong>🎵 Song Title:</strong> {{ song.title }}</p>
+  <p><strong>🎸 Genre:</strong> {{ song.get_genre_display }}</p>
+</div>
+
+<p>
+  Your music is now part of the growing collection of Ethiopian music on
+  our platform. Share it with your fans and watch the streams roll in!
+</p>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/songs/{{ song.id }}" class="cta-btn">
+    View Your Song
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  Keep uploading — the world is waiting to hear more from you. 🌍
+</p>
+{% endblock %}

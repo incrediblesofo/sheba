@@ -1,0 +1,49 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Payment Failed — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Payment Unsuccessful ⚠️</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  We were unable to process your payment for
+  <strong>Sheba Sound Premium</strong>. Your subscription has not been activated.
+</p>
+
+{% if subscription %}
+<div class="info-box">
+  <p><strong>💰 Amount:</strong> {{ subscription.amount }} {{ subscription.currency }}</p>
+  <p><strong>🏦 Provider:</strong> {{ subscription.get_payment_provider_display }}</p>
+  <p><strong>🔖 Reference:</strong> {{ subscription.transaction_ref }}</p>
+</div>
+{% endif %}
+
+<h2>What Could Have Gone Wrong?</h2>
+
+<div class="info-box">
+  <p>• Insufficient balance in your account</p>
+  <p>• Transaction timed out before completion</p>
+  <p>• Network issue during payment processing</p>
+  <p>• Payment was declined by your provider</p>
+</div>
+
+<p>
+  Don't worry — no money was charged. You can try again anytime.
+</p>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/subscription" class="cta-btn">
+    Retry Payment
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  If you believe this is an error or money was deducted from your account,
+  please contact our support team — we'll help resolve it immediately.
+</p>
+{% endblock %}

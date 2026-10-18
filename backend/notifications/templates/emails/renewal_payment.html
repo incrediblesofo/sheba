@@ -1,0 +1,53 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Complete Your Renewal — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Renew Your Premium 💳</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Your <strong>Sheba Sound Premium</strong> subscription has expired and is
+  ready for renewal. Complete the payment below to keep enjoying all your
+  premium benefits without interruption.
+</p>
+
+{% if subscription %}
+<div class="info-box">
+  <p><strong>💰 Renewal price:</strong> {{ subscription.amount }} {{ subscription.currency }}</p>
+  <p><strong>📅 New period:</strong> 30 days from payment</p>
+</div>
+{% endif %}
+
+<h2>Don't Lose Your Premium Perks</h2>
+
+<div class="info-box">
+  <p>✅ Unlimited playlists</p>
+  <p>✅ High-quality audio streaming</p>
+  <p>✅ Offline downloads</p>
+  <p>✅ Ad-free listening experience</p>
+</div>
+
+{% if checkout_url %}
+<div class="text-center">
+  <a href="{{ checkout_url }}" class="cta-btn">
+    Complete Payment
+  </a>
+</div>
+{% else %}
+<div class="text-center">
+  <a href="{{ frontend_url }}/subscription" class="cta-btn">
+    Renew on Sheba Sound
+  </a>
+</div>
+{% endif %}
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  If you prefer not to renew, no action is needed. Your account will continue
+  with the free plan.
+</p>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Premium Activated — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Welcome to Premium! 🌟</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Your <strong>Sheba Sound Premium</strong> subscription is now
+  <strong style="color: #4CAF50;">active</strong>! Thank you for supporting
+  Ethiopian music and artists.
+</p>
+
+<div class="info-box">
+  <p><strong>📅 Active until:</strong> {{ subscription.end_date|date:"F j, Y" }}</p>
+  <p><strong>💰 Amount paid:</strong> {{ subscription.amount }} {{ subscription.currency }}</p>
+  <p><strong>🔄 Auto-renewal:</strong> {{ subscription.auto_renew|yesno:"Enabled,Disabled" }}</p>
+</div>
+
+<h2>Your Premium Perks</h2>
+
+<div class="info-box">
+  <p><strong>🎧 High-Quality Audio</strong> — Crystal-clear streaming quality.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>📋 Unlimited Playlists</strong> — Create as many playlists as you want.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>📥 Offline Downloads</strong> — Download songs for offline listening.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>🚫 Ad-Free</strong> — Enjoy uninterrupted music, always.</p>
+</div>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}" class="cta-btn">
+    Start Listening
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  Questions about your subscription? Just reply to this email — we're here to help.
+</p>
+{% endblock %}

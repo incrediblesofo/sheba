@@ -1,0 +1,37 @@
+{% extends "emails/base_email.html" %}
+{% block title %}New Release — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>New Music Alert! 🎶</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Great news! <strong>{{ artist_profile.stage_name }}</strong> — an artist you
+  follow — just released a new track on Sheba Sound.
+</p>
+
+<div class="info-box">
+  <p><strong>🎵 Song:</strong> {{ song.title }}</p>
+  <p><strong>🎤 Artist:</strong> {{ artist_profile.stage_name }}</p>
+  <p><strong>🎸 Genre:</strong> {{ song.get_genre_display }}</p>
+</div>
+
+<p>
+  Be one of the first to listen! Tap the button below to start streaming now.
+</p>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/songs/{{ song.id }}" class="cta-btn">
+    Listen Now
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  You received this because you follow {{ artist_profile.stage_name }} on Sheba Sound.
+</p>
+{% endblock %}

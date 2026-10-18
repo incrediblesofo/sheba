@@ -1,0 +1,49 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Artist Application Update — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Application Update</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  We've reviewed your artist application and unfortunately it was
+  <strong style="color: #FF5252;">not approved</strong> at this time.
+</p>
+
+<div class="info-box">
+  <p><strong>🎤 Stage Name:</strong> {{ artist_profile.stage_name }}</p>
+  {% if reason %}
+  <p><strong>📝 Reason:</strong> {{ reason }}</p>
+  {% endif %}
+</div>
+
+<p>
+  This may be due to incomplete identity documents, unclear photos,
+  or missing information. Don't worry — you can update your application
+  and resubmit for another review.
+</p>
+
+<h2>How to Resubmit</h2>
+
+<div class="info-box">
+  <p>1. Go to your profile settings</p>
+  <p>2. Update the required documents</p>
+  <p>3. Submit your application again</p>
+</div>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/become-artist" class="cta-btn">
+    Resubmit Application
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  If you believe this was a mistake or need help, please contact our support team.
+  We want to help you share your music with the world.
+</p>
+{% endblock %}

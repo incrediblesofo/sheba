@@ -1,0 +1,284 @@
+/**
+ * Sheba Sound — Global Styles
+ * ----------------------------
+ * Premium Ethiopian-Spotify design system.
+ * Fonts: "Inter" (Latin) + "Noto Sans Ethiopic" (Ge'ez) + "Nyala" (Ethiopian).
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Ethiopic:wght@300;400;500;600;700&family=Noto+Serif+Ethiopic:wght@400;500;700&display=swap");
+
+/* -------------------------------------------------------------------------- */
+/*  Box Model                                                                  */
+/* -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Scrollbar                                                                  */
+/* -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(18, 166, 74, 0.5);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Focus Ring                                                                 */
+/* -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid #12A64A;
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Links                                                                      */
+/* -------------------------------------------------------------------------- */
+a {
+  transition: color 0.15s ease;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Ethiopian Tricolour Border Accent                                           */
+/* -------------------------------------------------------------------------- */
+.ethio-border-top {
+  position: relative;
+}
+
+.ethio-border-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    #078930 0%,
+    #078930 33%,
+    #FCDD09 33%,
+    #FCDD09 66%,
+    #DA121A 66%,
+    #DA121A 100%
+  );
+}
+
+/* Vertical version (for sidebar) */
+.ethio-border-left {
+  position: relative;
+}
+
+.ethio-border-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    #078930 0%,
+    #078930 33%,
+    #FCDD09 33%,
+    #FCDD09 66%,
+    #DA121A 66%,
+    #DA121A 100%
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Keyframe Animations                                                        */
+/* -------------------------------------------------------------------------- */
+
+/* Fade + slide up entrance */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Gentle pulse glow for playing indicator */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(18, 166, 74, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(18, 166, 74, 0.15);
+  }
+}
+
+/* Equaliser bar animation — individual bars */
+@keyframes eq1 {
+  0%, 100% { height: 4px; }
+  50% { height: 14px; }
+}
+
+@keyframes eq2 {
+  0%, 100% { height: 10px; }
+  30% { height: 4px; }
+  70% { height: 16px; }
+}
+
+@keyframes eq3 {
+  0%, 100% { height: 7px; }
+  40% { height: 14px; }
+  80% { height: 4px; }
+}
+
+/* Shimmer for loading states */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* Slow spin for album art when playing */
+@keyframes slowSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Ethiopian pattern shimmer */
+@keyframes patternDrift {
+  0% { background-position: 0 0; }
+  100% { background-position: 60px 60px; }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Utility Classes                                                            */
+/* -------------------------------------------------------------------------- */
+
+/* Staggered entrance animations */
+.anim-fade-1 { animation: fadeSlideUp 0.4s ease both; animation-delay: 0.05s; }
+.anim-fade-2 { animation: fadeSlideUp 0.4s ease both; animation-delay: 0.12s; }
+.anim-fade-3 { animation: fadeSlideUp 0.4s ease both; animation-delay: 0.2s;  }
+.anim-fade-4 { animation: fadeSlideUp 0.4s ease both; animation-delay: 0.28s; }
+.anim-fade-5 { animation: fadeSlideUp 0.4s ease both; animation-delay: 0.36s; }
+
+/* Animated equaliser bars */
+.eq-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+}
+
+.eq-bars span {
+  display: block;
+  width: 3px;
+  background: #12A64A;
+  border-radius: 2px;
+}
+
+.eq-bars span:nth-child(1) { animation: eq1 0.9s ease-in-out infinite; }
+.eq-bars span:nth-child(2) { animation: eq2 0.9s ease-in-out infinite 0.15s; }
+.eq-bars span:nth-child(3) { animation: eq3 0.9s ease-in-out infinite 0.3s; }
+
+/* Ethiopian SVG geometric overlay pattern (cross-hatch) */
+.ethio-pattern-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FCDD09' fill-opacity='0.04'%3E%3Cpath d='M30 0 L36 18 L54 18 L40 30 L46 48 L30 36 L14 48 L20 30 L6 18 L24 18 Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  animation: patternDrift 20s linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Mobile Responsive — Samsung & Small Phone Optimisations                    */
+/* -------------------------------------------------------------------------- */
+
+/* Prevent horizontal overflow on any element */
+* {
+  max-width: 100%;
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 600px) {
+  /* Ensure tap targets are at least 44px */
+  button,
+  [role="button"],
+  a {
+    min-height: 36px;
+  }
+
+  /* Tighter body padding */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent zooming on input focus (iOS/Samsung) */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Extra-small phones (Samsung Galaxy A series, older models, 320-359px) */
+@media (max-width: 359px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Small Samsung phones (360-411px) — Galaxy S series, A series */
+@media (min-width: 360px) and (max-width: 411px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Safe Area — notched phones (iPhone X+, Samsung punch-hole)                 */
+/* -------------------------------------------------------------------------- */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  #mobile-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Mobile Bottom Nav — prevent content overlap                                */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 899px) {
+  /* Ensure horizontal scroll containers don't break mobile layout */
+  .MuiBox-root {
+    -webkit-overflow-scrolling: touch;
+  }
+}

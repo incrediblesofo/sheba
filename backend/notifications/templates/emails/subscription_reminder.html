@@ -1,0 +1,41 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Subscription Expiring Soon{% endblock %}
+
+{% block content %}
+<h1>Your Premium Is Expiring Soon ⏰</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Just a heads-up — your <strong>Sheba Sound Premium</strong> subscription
+  expires in <span class="highlight">{{ days_remaining }} day{{ days_remaining|pluralize }}</span>.
+</p>
+
+<div class="info-box">
+  <p><strong>📅 Expires on:</strong> {{ subscription.end_date|date:"F j, Y" }}</p>
+  <p><strong>💰 Renewal price:</strong> {{ subscription.amount }} {{ subscription.currency }}</p>
+</div>
+
+<h2>Don't Lose Your Premium Perks</h2>
+
+<div class="info-box">
+  <p>✅ Unlimited playlists</p>
+  <p>✅ High-quality audio streaming</p>
+  <p>✅ Exclusive content access</p>
+  <p>✅ Ad-free listening experience</p>
+</div>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/subscription" class="cta-btn">
+    Renew Now
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  If you've already renewed or prefer the free plan, no action is needed.
+</p>
+{% endblock %}

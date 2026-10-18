@@ -1,0 +1,58 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Account Suspended — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Account Suspended 🚫</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Your Sheba Sound account has been <strong style="color: #FF5252;">suspended</strong>
+  due to a violation of our platform policies.
+</p>
+
+{% if reason %}
+<div class="info-box" style="border-left-color: #FF5252;">
+  <p><strong>📝 Reason for suspension:</strong></p>
+  <p>{{ reason }}</p>
+</div>
+{% else %}
+<div class="info-box" style="border-left-color: #FF5252;">
+  <p><strong>📝 Reason:</strong> Policy violation</p>
+</div>
+{% endif %}
+
+<h2>What This Means</h2>
+
+<div class="info-box">
+  <p>• You cannot log in to your account</p>
+  <p>• Your uploaded content may be hidden from the platform</p>
+  <p>• Active subscriptions have been paused</p>
+</div>
+
+<h2>How to Appeal</h2>
+
+<p>
+  If you believe this suspension was made in error, you can appeal by replying
+  directly to this email. Please include:
+</p>
+
+<div class="info-box">
+  <p>1. Your username: <strong>{{ user.username }}</strong></p>
+  <p>2. A brief explanation of why you believe the suspension is incorrect</p>
+  <p>3. Any supporting information</p>
+</div>
+
+<p>
+  Our team will review your appeal and respond within 3–5 business days.
+</p>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  For more details about our policies, visit our Terms of Service at
+  <a href="{{ frontend_url }}/terms" style="color: #D4AF37;">{{ frontend_url }}/terms</a>.
+</p>
+{% endblock %}

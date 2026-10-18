@@ -1,0 +1,49 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Artist Verified — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Congratulations! 🎉</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Great news — your artist application has been <strong style="color: #4CAF50;">approved</strong>!
+  You are now a <span class="highlight">verified artist</span> on Sheba Sound.
+</p>
+
+<div class="info-box">
+  <p><strong>🎤 Stage Name:</strong> {{ artist_profile.stage_name }}</p>
+  <p><strong>✅ Status:</strong> Verified</p>
+</div>
+
+<h2>What's Next?</h2>
+
+<div class="info-box">
+  <p><strong>🎵 Upload Your Music</strong> — Share your tracks with thousands
+  of listeners across Ethiopia and beyond.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>📊 Track Your Stats</strong> — Monitor streams, followers,
+  and earnings from your artist dashboard.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>💰 Earn Revenue</strong> — Get paid for your streams as your
+  fan base grows on the platform.</p>
+</div>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/artist/dashboard" class="cta-btn">
+    Go to Artist Dashboard
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  Welcome to the Sheba Sound artist community. The world is waiting to hear you! 🌍
+</p>
+{% endblock %}

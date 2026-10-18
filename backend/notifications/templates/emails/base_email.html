@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Sheba Sound{% endblock %}</title>
+  <style>
+    /* Reset */
+    body, table, td, p, a, li, blockquote {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0D0D1A;
+      color: #E0E0E0;
+      line-height: 1.6;
+    }
+    .email-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #1A1A2E;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+    /* Header */
+    .email-header {
+      background: linear-gradient(135deg, #1A1A2E 0%, #2D1B4E 50%, #1A1A2E 100%);
+      padding: 32px 24px;
+      text-align: center;
+      border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    }
+    .email-header .logo-text {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .logo-sheba {
+      color: #D4AF37;
+    }
+    .logo-sound {
+      color: #FFFFFF;
+    }
+    .email-header .tagline {
+      font-size: 13px;
+      color: #9E9E9E;
+      margin-top: 4px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    /* Body */
+    .email-body {
+      padding: 32px 28px;
+    }
+    .email-body h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+    .email-body h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #D4AF37;
+      margin-bottom: 12px;
+    }
+    .email-body p {
+      font-size: 15px;
+      color: #CCCCCC;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .email-body .highlight {
+      color: #D4AF37;
+      font-weight: 600;
+    }
+    /* CTA Button */
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #D4AF37, #B8962E);
+      color: #0D0D1A !important;
+      text-decoration: none;
+      padding: 14px 36px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+    }
+    .cta-btn:hover {
+      background: linear-gradient(135deg, #E5C54A, #D4AF37);
+    }
+    /* Info Box */
+    .info-box {
+      background-color: rgba(212, 175, 55, 0.08);
+      border-left: 4px solid #D4AF37;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+    .info-box p {
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+      margin: 24px 0;
+    }
+    /* Footer */
+    .email-footer {
+      background-color: #111122;
+      padding: 24px 28px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .email-footer p {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .email-footer a {
+      color: #D4AF37;
+      text-decoration: none;
+    }
+    /* Utilities */
+    .text-center { text-align: center; }
+    .text-muted { color: #888; font-size: 13px; }
+    .mt-8 { margin-top: 8px; }
+    .mb-8 { margin-bottom: 8px; }
+  </style>
+</head>
+<body style="margin: 0; padding: 20px 0; background-color: #0D0D1A;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0D0D1A;">
+    <tr>
+      <td align="center" style="padding: 20px 12px;">
+        <div class="email-wrapper">
+          <!-- Header -->
+          <div class="email-header">
+            <div class="logo-text">
+              <span class="logo-sheba">Sheba</span>
+              <span class="logo-sound">Sound</span>
+            </div>
+            <div class="tagline">Ethiopian Music Platform</div>
+          </div>
+
+          <!-- Body -->
+          <div class="email-body">
+            {% block content %}{% endblock %}
+          </div>
+
+          <!-- Footer -->
+          <div class="email-footer">
+            <p>&copy; {{ year }} Sheba Sound. All rights reserved.</p>
+            <p>
+              <a href="{{ frontend_url }}">Visit Sheba Sound</a>
+            </p>
+            <p class="mt-8" style="margin-top: 12px; color: #555; font-size: 11px;">
+              You received this email because you have an account with Sheba Sound.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

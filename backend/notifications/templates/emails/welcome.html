@@ -1,0 +1,47 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Welcome to Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user.first_name|default:user.username }}! 🎶</h1>
+
+<p>
+  We're thrilled to have you join <span class="highlight">Sheba Sound</span> — Ethiopia's
+  premier music platform celebrating the rich tapestry of Ethiopian music.
+</p>
+
+<div class="divider"></div>
+
+<h2>What You Can Do</h2>
+
+<div class="info-box">
+  <p><strong>🎧 Discover Music</strong> — Explore thousands of tracks from Tizita
+  to Ethio-Jazz, from legendary artists to rising stars.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>📋 Create Playlists</strong> — Curate your own collections and
+  share them with the community.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>❤️ Follow Artists</strong> — Stay updated with your favourite
+  artists' latest releases.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>⭐ Go Premium</strong> — Unlock unlimited playlists, ad-free
+  listening, and exclusive content.</p>
+</div>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}" class="cta-btn">
+    Start Listening Now
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  If you have any questions, just reply to this email — we're always here to help.
+</p>
+{% endblock %}

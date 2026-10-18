@@ -1,0 +1,38 @@
+{% extends "emails/base_email.html" %}
+{% block title %}New Follower — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>You Have a New Follower! 👤</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  <strong>{{ follower.first_name|default:follower.username }}</strong> just started
+  following you on Sheba Sound! Your fan base is growing. 🎉
+</p>
+
+<div class="info-box">
+  <p><strong>👤 New Follower:</strong> {{ follower.first_name|default:"" }} {{ follower.last_name|default:"" }}
+    ({{ follower.username }})</p>
+</div>
+
+<p>
+  Keep uploading great music and engaging with your listeners.
+  Every new follower brings you closer to a wider audience.
+</p>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/artist/dashboard" class="cta-btn">
+    View Your Dashboard
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  You received this because someone new started following your
+  artist profile on Sheba Sound.
+</p>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Subscription Expired — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Your Premium Has Expired 😢</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Your <strong>Sheba Sound Premium</strong> subscription has expired.
+  Your account has been switched to the <strong>free tier</strong>.
+</p>
+
+{% if subscription %}
+<div class="info-box">
+  <p><strong>📅 Expired on:</strong> {{ subscription.end_date|date:"F j, Y" }}</p>
+  <p><strong>💰 Previous plan:</strong> {{ subscription.amount }} {{ subscription.currency }}/month</p>
+</div>
+{% endif %}
+
+<h2>What You're Missing</h2>
+
+<div class="info-box" style="border-left-color: #FF5252;">
+  <p>❌ Unlimited playlists → Limited to 3</p>
+  <p>❌ Offline downloads → No longer available</p>
+  <p>❌ High-quality audio → Standard quality only</p>
+  <p>❌ Ad-free listening → Ads will be shown</p>
+</div>
+
+<p>
+  Renew now to get back to enjoying the full premium experience — uninterrupted
+  music, unlimited playlists, and more.
+</p>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/subscription" class="cta-btn">
+    Renew Premium
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  You can continue using Sheba Sound with the free plan.
+  Upgrade anytime to unlock premium features again.
+</p>
+{% endblock %}

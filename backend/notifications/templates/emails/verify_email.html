@@ -1,0 +1,47 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Verify Your Email — Sheba Sound{% endblock %}
+
+{% block content %}
+<h1>Confirm it’s you</h1>
+
+<p>
+  Hi {{ user.first_name|default:user.username }},
+</p>
+
+<p>
+  Thanks for joining <span class="highlight">Sheba Sound</span>. To prove you control
+  this address, use the <strong>private verification link</strong> below. It only works
+  for your account, can be used <strong>once</strong>, and stops working after about
+  <strong>{{ link_expires_days }} day{% if link_expires_days != 1 %}s{% endif %}</strong>
+  (or sooner if you have already confirmed this address).
+</p>
+
+<div class="text-center">
+  <a href="{{ verify_url }}" class="cta-btn">
+    Verify this email
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<div class="info-box">
+  <p><strong>How to use it</strong></p>
+  <p>Open the link on the same phone or computer where you use Sheba Sound if you can.
+     If the button opens the wrong browser, copy the full URL at the bottom of this email
+     and paste it into the browser where you signed up.</p>
+</div>
+
+<div class="info-box">
+  <p><strong>Why we ask</strong></p>
+  <p>Verification protects your account and is required before Premium or purchases.</p>
+</div>
+
+<p class="text-muted text-center">
+  If you didn’t create a Sheba Sound account, you can ignore this message — the link will expire on its own.
+</p>
+
+<p class="text-muted text-center" style="font-size: 12px; margin-top: 16px;">
+  Button not working? Copy the entire line into your browser’s address bar:<br>
+  <a href="{{ verify_url }}" style="color: #D4AF37; word-break: break-all;">{{ verify_url }}</a>
+</p>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Song Not Approved{% endblock %}
+
+{% block content %}
+<h1>Song Review Update</h1>
+
+<p>
+  Hi <span class="highlight">{{ user.first_name|default:user.username }}</span>,
+</p>
+
+<p>
+  Unfortunately, your song was <strong style="color: #FF5252;">not approved</strong>
+  after review by our moderation team.
+</p>
+
+<div class="info-box">
+  <p><strong>🎵 Song Title:</strong> {{ song.title }}</p>
+  <p><strong>🎸 Genre:</strong> {{ song.get_genre_display }}</p>
+  {% if reason %}
+  <p><strong>📝 Reason:</strong> {{ reason }}</p>
+  {% endif %}
+</div>
+
+<p>
+  This may be due to audio quality, content guidelines, or incomplete metadata.
+  Please review our guidelines and feel free to re-submit an updated version.
+</p>
+
+<div class="text-center">
+  <a href="{{ frontend_url }}/artist/upload" class="cta-btn">
+    Upload a New Version
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<p class="text-muted text-center">
+  If you believe this was a mistake, please contact our support team.
+  We're here to help you share your music with the world.
+</p>
+{% endblock %}
