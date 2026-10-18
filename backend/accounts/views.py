@@ -207,28 +207,18 @@ class UpdateAvatarView(APIView):
 
     @staticmethod
     def _save_image(file, user):
-        """Try Cloudinary first; fall back to local media storage."""
-        from django.conf import settings
-        if getattr(settings, "CLOUDINARY_CLOUD_NAME", ""):
-            try:
-                import cloudinary.uploader
-                result = cloudinary.uploader.upload(
-                    file, folder="avatars", public_id=str(user.id), overwrite=True,
-                    resource_type="image",
-                    transformation=[{"width": 400, "height": 400, "crop": "fill", "gravity": "face"}],
-                )
-                return result["secure_url"]
-            except Exception:
-                pass
-        import os
-        ext = os.path.splitext(file.name)[1] or ".jpg"
-        filename = f"avatars/{user.id}{ext}"
-        filepath = os.path.join(settings.MEDIA_ROOT, filename)
-        os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        with open(filepath, "wb+") as dest:
-            for chunk in file.chunks():
-                dest.write(chunk)
-        return f"{settings.MEDIA_URL}{filename}"
+        """Upload avatar to Supabase Storage, Cloudinary, or local fallback."""
+        from music.storage import MediaStorage
+        storage = MediaStorage()
+        ext = os.path.splitext(getattr(file, "name", "avatar.jpg"))[1] or ".jpg"
+        result = storage.upload_image(
+            file,
+            folder="avatars",
+            public_id=f"avatars/{user.id}{ext}",
+            width=400,
+            height=400,
+        )
+        return result["url"]
 
 
 class ForgotPasswordView(APIView):
@@ -713,31 +703,17 @@ class ArtistImageUploadView(APIView):
 
     @staticmethod
     def _save_image(file, artist_profile, image_type):
-        """Try Cloudinary first; fall back to local media storage."""
-        from django.conf import settings
+        """Upload artist profile/cover image to Supabase Storage, Cloudinary, or local fallback."""
+        from music.storage import MediaStorage
+        storage = MediaStorage()
         folder = "artist_profiles" if image_type == "profile" else "artist_covers"
-        public_id = f"{artist_profile.id}_{image_type}"
-        if getattr(settings, "CLOUDINARY_CLOUD_NAME", ""):
-            try:
-                import cloudinary.uploader
-                transformation = (
-                    [{"width": 400, "height": 400, "crop": "fill", "gravity": "face"}]
-                    if image_type == "profile"
-                    else [{"width": 1500, "height": 500, "crop": "fill", "gravity": "auto"}]
-                )
-                result = cloudinary.uploader.upload(
-                    file, folder=folder, public_id=public_id, overwrite=True,
-                    resource_type="image", transformation=transformation,
-                )
-                return result["secure_url"]
-            except Exception:
-                pass
-        import os
-        ext = os.path.splitext(file.name)[1] or ".jpg"
-        filename = f"{folder}/{artist_profile.id}{ext}"
-        filepath = os.path.join(settings.MEDIA_ROOT, filename)
-        os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        with open(filepath, "wb+") as dest:
-            for chunk in file.chunks():
-                dest.write(chunk)
-        return f"{settings.MEDIA_URL}{filename}"
+        ext = os.path.splitext(getattr(file, "name", "image.jpg"))[1] or ".jpg"
+        public_id = f"{folder}/{artist_profile.id}_{image_type}{ext}"
+        result = storage.upload_image(
+            file,
+            folder=folder,
+            public_id=public_id,
+            width=400 if image_type == "profile" else 1500,
+            height=400 if image_type == "profile" else 500,
+        )
+        return result["url"]

@@ -21,7 +21,10 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost,127.0.0.1,.vercel.app"
+).split(",")
 
 # ------------------------------------------------------------------ #
 #  Installed Apps                                                      #
@@ -88,21 +91,33 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # ------------------------------------------------------------------ #
-#  Database — PostgreSQL                                               #
+#  Database — PostgreSQL (Supabase / Neon / Render) or SQLite fallback #
 # ------------------------------------------------------------------ #
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=(
-            f"postgresql://{os.environ.get('DB_USER', 'postgres')}"
-            f":{os.environ.get('DB_PASSWORD', 'postgres')}"
-            f"@{os.environ.get('DB_HOST', 'localhost')}"
-            f":{os.environ.get('DB_PORT', '5432')}"
-            f"/{os.environ.get('DB_NAME', 'sheba_sound_db')}"
-        ),
-        conn_max_age=600,
+_db_url = os.environ.get("DATABASE_URL") or os.environ.get("SUPABASE_DB_URL", "")
+
+if _db_url:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            _db_url,
+            conn_max_age=600,
+            ssl_require=True if ("supabase" in _db_url or "neon" in _db_url) else False,
+        )
+    }
+else:
+    _default_pg = (
+        f"postgresql://{os.environ.get('DB_USER', 'postgres')}"
+        f":{os.environ.get('DB_PASSWORD', 'postgres')}"
+        f"@{os.environ.get('DB_HOST', 'localhost')}"
+        f":{os.environ.get('DB_PORT', '5432')}"
+        f"/{os.environ.get('DB_NAME', 'sheba_sound_db')}"
     )
-}
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=_default_pg if not DEBUG else f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+            conn_max_age=600,
+        )
+    }
 
 
 # ------------------------------------------------------------------ #
@@ -147,6 +162,18 @@ STORAGES = {
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# ------------------------------------------------------------------ #
+#  Supabase Storage (Music & Images CDN)                               #
+# ------------------------------------------------------------------ #
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = (
+    os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    or os.environ.get("SUPABASE_KEY")
+    or os.environ.get("SUPABASE_ANON_KEY", "")
+)
+SUPABASE_STORAGE_BUCKET = os.environ.get("SUPABASE_STORAGE_BUCKET", "music")
 
 # ------------------------------------------------------------------ #
 #  Cloudinary (Cloud Storage + CDN)                                    #
@@ -222,12 +249,27 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-# Add extra frontend URL if configured in .env
+# Add extra frontend URL if configured in .env or Vercel
+_vercel_url = os.environ.get("VERCEL_PROJECT_PRODUCTION_URL") or os.environ.get("VERCEL_URL")
+if _vercel_url:
+    _clean_host = _vercel_url.replace("https://", "").replace("http://", "").split("/")[0]
+    if _clean_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_clean_host)
+    _https_url = f"https://{_clean_host}"
+    if _https_url not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(_https_url)
+
 _frontend_url = os.environ.get("FRONTEND_URL", "")
 if _frontend_url and _frontend_url not in CORS_ALLOWED_ORIGINS:
     CORS_ALLOWED_ORIGINS.append(_frontend_url)
 
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.replace("http://", "https://")
+    for origin in CORS_ALLOWED_ORIGINS
+    if origin.startswith("http")
+] + ["https://*.vercel.app"]
 
 # ------------------------------------------------------------------ #
 #  Payment Gateways                                                    #
