@@ -147,8 +147,17 @@ class InitiatePaymentView(APIView):
             duration_days = 30
 
         checkout_url = None
+        is_test_mode = False
         callback_base = django_settings.PAYMENT_CALLBACK_BASE_URL.rstrip("/")
-        frontend_url = django_settings.FRONTEND_URL.rstrip("/")
+
+        # Dynamically determine the caller's origin from headers to avoid wrong domain redirects
+        origin = request.headers.get("Origin") or request.headers.get("Referer", "")
+        if origin:
+            from urllib.parse import urlparse
+            parsed = urlparse(origin)
+            frontend_url = f"{parsed.scheme}://{parsed.netloc}"
+        else:
+            frontend_url = django_settings.FRONTEND_URL.rstrip("/")
 
         if provider == "chapa":
             gateway = ChapaGateway()
@@ -171,8 +180,9 @@ class InitiatePaymentView(APIView):
                     checkout_url = res.get("checkout_url")
                 else:
                     # In development / sandbox fallback when keys are not configured yet:
-                    logger.info("Chapa: using sandbox/test mode redirect for tx_ref=%s", tx_ref)
-                    checkout_url = f"{frontend_url}/subscription/return?tx_ref={tx_ref}&provider=chapa&test_mode=1"
+                    logger.info("Chapa: using sandbox/test mode for tx_ref=%s", tx_ref)
+                    is_test_mode = True
+                    checkout_url = None
             except PaymentGatewayError as exc:
                 logger.error("Chapa payment initialization failed: %s", exc.message)
                 return Response(
@@ -217,7 +227,8 @@ class InitiatePaymentView(APIView):
                 "tx_ref": tx_ref,
                 "amount": str(amount),
                 "billing_period": billing_period,
-                "checkout_url": checkout_url,  # Only set for Telebirr
+                "checkout_url": checkout_url,
+                "is_test_mode": is_test_mode,
                 "subscription_id": str(subscription.id),
             },
             status=status.HTTP_201_CREATED,

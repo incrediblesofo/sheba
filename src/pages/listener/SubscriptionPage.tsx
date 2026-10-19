@@ -209,8 +209,16 @@ const SubscriptionPage: React.FC = () => {
 
       setPaymentDialogOpen(false);
 
+      if (result.is_test_mode) {
+        // Test mode: navigate smoothly inside single-page app (no external reload, no 404)
+        navigate(
+          `${ROUTES.LISTENER_PAYMENT_RETURN}?tx_ref=${encodeURIComponent(result.tx_ref)}&provider=chapa&test_mode=1`
+        );
+        return;
+      }
+
       if (result.checkout_url) {
-        // Redirect directly to Chapa's official hosted checkout page
+        // Live mode: Redirect directly to Chapa's official hosted checkout page
         window.location.href = result.checkout_url;
         return;
       }

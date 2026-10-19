@@ -215,6 +215,7 @@ export interface InitiatePaymentResponse {
   amount: string;
   billing_period: string;
   checkout_url?: string | null;
+  is_test_mode?: boolean;
   subscription_id: string;
 }
 
