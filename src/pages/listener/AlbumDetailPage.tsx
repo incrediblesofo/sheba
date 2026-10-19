@@ -49,6 +49,8 @@ const AlbumDetailPage: React.FC = () => {
 
   const albumSongs = album?.songs ?? [];
   const totalDuration = albumSongs.reduce((acc, s) => acc + s.duration, 0);
+  const artistDisplayName = artist?.stage_name || album?.artist_name || 'Unknown Artist';
+  const artistTargetId = artist?.id || album?.artist;
 
   const handlePlayAll = (): void => {
     if (!requireAuth()) return;
@@ -116,18 +118,16 @@ const AlbumDetailPage: React.FC = () => {
           <Typography variant="h5" fontWeight={800} sx={{ mb: 0.25 }}>
             {album.title}
           </Typography>
-          {artist && (
-            <Typography
-              variant="body2"
-              onClick={() => navigate(`/artist/${artist.id}`)}
-              sx={{
-                color: 'text.secondary', cursor: 'pointer',
-                '&:hover': { textDecoration: 'underline' },
-              }}
-            >
-              {artist.stage_name}
-            </Typography>
-          )}
+          <Typography
+            variant="body2"
+            onClick={() => artistTargetId && navigate(`/artist/${artistTargetId}`)}
+            sx={{
+              color: 'text.secondary', cursor: 'pointer',
+              '&:hover': { textDecoration: 'underline' },
+            }}
+          >
+            {artistDisplayName}
+          </Typography>
           <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
             {new Date(album.release_date).getFullYear()} • {albumSongs.length} songs
           </Typography>
@@ -238,21 +238,19 @@ const AlbumDetailPage: React.FC = () => {
             {album.title}
           </Typography>
 
-          {artist && (
-            <Typography
-              variant="body1"
-              component={Link}
-              to={`/artist/${artist.id}`}
-              sx={{
-                color: 'text.primary',
-                textDecoration: 'none',
-                fontWeight: 600,
-                '&:hover': { textDecoration: 'underline' },
-              }}
-            >
-              {artist.stage_name}
-            </Typography>
-          )}
+          <Typography
+            variant="body1"
+            component={artistTargetId ? Link : 'span'}
+            to={artistTargetId ? `/artist/${artistTargetId}` : undefined}
+            sx={{
+              color: 'text.primary',
+              textDecoration: 'none',
+              fontWeight: 600,
+              '&:hover': { textDecoration: 'underline' },
+            }}
+          >
+            {artistDisplayName}
+          </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, flexWrap: 'wrap' }}>
             <Chip label={album.genre} size="small" />

@@ -64,6 +64,7 @@ class ListenerProfileSerializer(serializers.ModelSerializer):
 class ArtistProfileSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     followers_count = serializers.SerializerMethodField()
+    total_streams = serializers.SerializerMethodField()
 
     class Meta:
         model = ArtistProfile
@@ -84,6 +85,11 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     def get_followers_count(self, obj):
         return obj.followers.count()
+
+    def get_total_streams(self, obj):
+        from django.db.models import Sum
+        song_total = obj.songs.aggregate(total=Sum("stream_count"))["total"]
+        return song_total if song_total is not None else obj.total_streams
 
 
 # ------------------------------------------------------------------ #

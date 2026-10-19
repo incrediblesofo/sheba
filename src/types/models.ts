@@ -115,6 +115,7 @@ export interface ArtistProfile extends BaseEntity {
 
 export interface Album extends BaseEntity {
   artist: string; // FK → ArtistProfile.id
+  artist_name?: string;
   title: string;
   cover_image_url: string | null;
   release_date: string; // ISO-8601

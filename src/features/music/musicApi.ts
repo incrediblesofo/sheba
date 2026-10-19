@@ -80,6 +80,7 @@ export interface SongWithArtist extends Song {
 /** Album detail (from /albums/<id>/) includes nested songs. */
 export interface AlbumDetail extends Album {
   songs: SongWithArtist[];
+  artist_name?: string;
 }
 
 /** Playlist detail with full song objects instead of IDs. */
