@@ -294,7 +294,7 @@ export const musicApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: [
     'Song', 'Album', 'ArtistProfile', 'Playlist', 'LikedSongs', 'History',
-    'AdminStats', 'AdminUsers', 'Moderation', 'AdminSubscriptions', 'AdminReports',
+    'AdminStats', 'AdminUsers', 'Moderation', 'AdminSubscriptions', 'CurrentSubscription', 'AdminReports',
     'AdminActivity', 'ArtistAnalytics', 'ArtistEarnings', 'Notifications',
     'FollowedArtists', 'Downloads', 'PendingArtists',
   ],
@@ -910,13 +910,13 @@ export const musicApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['AdminSubscriptions'],
+      invalidatesTags: ['AdminSubscriptions', 'CurrentSubscription'],
     }),
 
     /** GET /api/subscriptions/current/ — user's active subscription */
     getCurrentSubscription: builder.query<CurrentSubscriptionResponse, void>({
       query: () => '/subscriptions/current/',
-      providesTags: ['AdminSubscriptions'],
+      providesTags: ['CurrentSubscription', 'AdminSubscriptions'],
     }),
 
     /** GET /api/subscriptions/verify/<tx_ref>/ — poll payment status */
@@ -928,6 +928,16 @@ export const musicApi = createApi({
         }
         return `/subscriptions/verify/${txRef.replace(/\/$/, '')}/`;
       },
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data && data.status === 'completed') {
+            dispatch(musicApi.util.invalidateTags(['CurrentSubscription', 'AdminSubscriptions']));
+          }
+        } catch {
+          // ignore error
+        }
+      },
     }),
 
     /** POST /api/subscriptions/cancel/ — cancel auto-renewal */
@@ -937,7 +947,7 @@ export const musicApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['AdminSubscriptions'],
+      invalidatesTags: ['AdminSubscriptions', 'CurrentSubscription'],
     }),
 
     /* ============================================================== */

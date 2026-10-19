@@ -63,6 +63,16 @@ class MySubscriptionView(APIView):
         )
 
         if not subscription:
+            profile = getattr(request.user, "listener_profile", None)
+            if profile and profile.subscription_tier == SubscriptionTier.PREMIUM:
+                return Response(
+                    {
+                        "has_subscription": True,
+                        "tier": "premium",
+                        "subscription": None,
+                    },
+                    status=status.HTTP_200_OK,
+                )
             return Response(
                 {
                     "has_subscription": False,
@@ -182,6 +192,7 @@ class InitiatePaymentView(APIView):
                     # In development / sandbox fallback when keys are not configured yet:
                     logger.info("Chapa: using sandbox/test mode for tx_ref=%s", tx_ref)
                     is_test_mode = True
+                    tx_ref = f"test-{tx_ref}"
                     checkout_url = None
             except PaymentGatewayError as exc:
                 logger.error("Chapa payment initialization failed: %s", exc.message)
@@ -270,7 +281,12 @@ class VerifyPaymentView(APIView):
             if subscription.payment_provider == "chapa":
                 gateway = ChapaGateway()
                 # If test mode is active or dummy key configured
-                if request.query_params.get("test_mode") == "1" or gateway.secret_key.startswith("CHASECK_TEST-xxxx"):
+                is_test = (
+                    request.query_params.get("test_mode") in ("1", "true", "True")
+                    or tx_ref.startswith("test-")
+                    or gateway.secret_key.startswith("CHASECK_TEST-xxxx")
+                )
+                if is_test:
                     logger.info("Chapa verify: test mode accepted for tx_ref=%s", tx_ref)
                     result = {"status": "success", "tx_ref": tx_ref}
                 else:
@@ -511,8 +527,12 @@ def _activate_subscription(subscription: Subscription, user) -> None:
         profile.subscription_tier = SubscriptionTier.PREMIUM
         profile.subscription_expiry = subscription.end_date
         profile.save(update_fields=["subscription_tier", "subscription_expiry"])
-    except ListenerProfile.DoesNotExist:
-        pass
+    except (ListenerProfile.DoesNotExist, AttributeError):
+        ListenerProfile.objects.create(
+            user=user,
+            subscription_tier=SubscriptionTier.PREMIUM,
+            subscription_expiry=subscription.end_date,
+        )
 
     logger.info(
         "Subscription activated: user=%s tx_ref=%s",

@@ -58,7 +58,9 @@ const SettingsPage: React.FC = () => {
   const { isPremium } = usePremiumStatus();
 
   /* ---- Subscription data ---- */
-  const { data: subData } = useGetCurrentSubscriptionQuery();
+  const { data: subData } = useGetCurrentSubscriptionQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   /* ---- Avatar state ---- */
   const avatarInputRef = useRef<HTMLInputElement>(null);

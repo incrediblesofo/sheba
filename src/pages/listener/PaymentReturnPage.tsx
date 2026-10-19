@@ -21,12 +21,15 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import { useVerifyPaymentQuery } from "@/features/music/musicApi";
+import { useAppDispatch } from "@/app/hooks";
+import { useVerifyPaymentQuery, musicApi } from "@/features/music/musicApi";
+import { authApi } from "@/features/auth/authApi";
 import { ROUTES } from "@/utils/constants";
 
 type PaymentState = "verifying" | "success" | "pending" | "failed";
 
 const PaymentReturnPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const txRef = searchParams.get("tx_ref") ?? "";
@@ -56,6 +59,8 @@ const PaymentReturnPage: React.FC = () => {
       const status = verifyData.status;
       if (status === "completed") {
         setPaymentState("success");
+        dispatch(musicApi.util.invalidateTags(["CurrentSubscription", "AdminSubscriptions"]));
+        dispatch(authApi.util.invalidateTags(["User"]));
         return;
       }
       if (status === "failed") {
@@ -215,7 +220,11 @@ const PaymentReturnPage: React.FC = () => {
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => navigate(ROUTES.LISTENER_HOME)}
+                onClick={() => {
+                  dispatch(musicApi.util.invalidateTags(["CurrentSubscription", "AdminSubscriptions"]));
+                  dispatch(authApi.util.invalidateTags(["User"]));
+                  navigate(ROUTES.LISTENER_HOME);
+                }}
                 sx={{ borderRadius: 3, px: 4 }}
               >
                 Start Listening
@@ -248,7 +257,10 @@ const PaymentReturnPage: React.FC = () => {
                 </Button>
                 <Button
                   variant="contained"
-                  onClick={() => navigate(ROUTES.LISTENER_HOME)}
+                  onClick={() => {
+                    dispatch(musicApi.util.invalidateTags(["CurrentSubscription", "AdminSubscriptions"]));
+                    navigate(ROUTES.LISTENER_HOME);
+                  }}
                   sx={{ borderRadius: 3 }}
                 >
                   Go to Home
@@ -259,7 +271,11 @@ const PaymentReturnPage: React.FC = () => {
             {(paymentState === "success" || paymentState === "failed") && (
               <Button
                 variant="outlined"
-                onClick={() => navigate(ROUTES.LISTENER_SUBSCRIPTION)}
+                onClick={() => {
+                  dispatch(musicApi.util.invalidateTags(["CurrentSubscription", "AdminSubscriptions"]));
+                  dispatch(authApi.util.invalidateTags(["User"]));
+                  navigate(ROUTES.LISTENER_SUBSCRIPTION);
+                }}
                 sx={{ borderRadius: 3 }}
               >
                 Subscription Settings

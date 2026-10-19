@@ -117,7 +117,14 @@ const SubscriptionPage: React.FC = () => {
     data: currentSub,
     isLoading: subLoading,
     refetch: refetchSub,
-  } = useGetCurrentSubscriptionQuery();
+  } = useGetCurrentSubscriptionQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  // Always force a refetch on mount so that any recent payment immediately updates UI
+  useEffect(() => {
+    refetchSub();
+  }, [refetchSub]);
 
   const [initiatePayment, { isLoading: initiating }] = useInitiatePaymentMutation();
   const [cancelSubscription, { isLoading: cancelling }] = useCancelSubscriptionMutation();
