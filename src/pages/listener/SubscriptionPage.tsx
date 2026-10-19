@@ -209,6 +209,12 @@ const SubscriptionPage: React.FC = () => {
 
       setPaymentDialogOpen(false);
 
+      if (result.checkout_url) {
+        // Redirect directly to Chapa's official hosted checkout page
+        window.location.href = result.checkout_url;
+        return;
+      }
+
       if (result.tx_ref) {
         currentTxRef.current = result.tx_ref;
         currentAmount.current = result.amount || String(displayPrice);

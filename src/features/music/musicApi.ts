@@ -920,7 +920,13 @@ export const musicApi = createApi({
 
     /** GET /api/subscriptions/verify/<tx_ref>/ — poll payment status */
     verifyPayment: builder.query<VerifyPaymentResponse, string>({
-      query: (txRef) => `/subscriptions/verify/${txRef}/`,
+      query: (txRef) => {
+        if (txRef.includes('?')) {
+          const [ref, query] = txRef.split('?');
+          return `/subscriptions/verify/${ref.replace(/\/$/, '')}/?${query}`;
+        }
+        return `/subscriptions/verify/${txRef.replace(/\/$/, '')}/`;
+      },
     }),
 
     /** POST /api/subscriptions/cancel/ — cancel auto-renewal */

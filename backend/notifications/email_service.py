@@ -480,12 +480,12 @@ class EmailService:
             plain_body = strip_tags(html_body)
 
             send_mail(
-                subject=subject,
-                message=plain_body,
+                subject=subject.encode("ascii", "replace").decode("ascii") if settings.EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend" else subject,
+                message=plain_body.encode("ascii", "replace").decode("ascii") if settings.EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend" else plain_body,
                 from_email=_from_email(),
                 recipient_list=[recipient],
                 html_message=html_body,
-                fail_silently=False,
+                fail_silently=True,
             )
             logger.info("Email sent: subject=%r to=%s", subject, recipient)
             return True

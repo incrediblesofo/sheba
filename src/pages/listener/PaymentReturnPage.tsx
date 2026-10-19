@@ -34,12 +34,14 @@ const PaymentReturnPage: React.FC = () => {
 
   const [paymentState, setPaymentState] = useState<PaymentState>("verifying");
   const [pollCount, setPollCount] = useState(0);
+  const testMode = searchParams.get("test_mode");
+  const verifyArg = testMode ? `${txRef}/?test_mode=${testMode}` : txRef;
 
   const {
     data: verifyData,
     isLoading,
     refetch,
-  } = useVerifyPaymentQuery(txRef, {
+  } = useVerifyPaymentQuery(verifyArg, {
     skip: !txRef,
   });
 

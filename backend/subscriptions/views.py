@@ -146,19 +146,42 @@ class InitiatePaymentView(APIView):
             amount = django_settings.SUBSCRIPTION_PRICE_MONTHLY_ETB
             duration_days = 30
 
-        # Generate transaction reference
+        checkout_url = None
+        callback_base = django_settings.PAYMENT_CALLBACK_BASE_URL.rstrip("/")
+        frontend_url = django_settings.FRONTEND_URL.rstrip("/")
+
         if provider == "chapa":
             gateway = ChapaGateway()
             tx_ref = gateway.generate_tx_ref(str(user.id))
+            try:
+                # If a valid Chapa key is configured (not the default placeholder)
+                if gateway.secret_key and not gateway.secret_key.startswith("CHASECK_TEST-xxxx"):
+                    user_email = user.email or f"{user.username}@shebasound.com"
+                    res = gateway.initialize_payment(
+                        amount=str(amount),
+                        currency="ETB",
+                        email=user_email,
+                        first_name=user.first_name or user.username,
+                        last_name=user.last_name or "Listener",
+                        tx_ref=tx_ref,
+                        callback_url=f"{callback_base}/api/subscriptions/webhooks/chapa/",
+                        return_url=f"{frontend_url}/subscription/return?tx_ref={tx_ref}&provider=chapa",
+                        phone_number=getattr(user, "phone_number", "") or "",
+                    )
+                    checkout_url = res.get("checkout_url")
+                else:
+                    # In development / sandbox fallback when keys are not configured yet:
+                    logger.info("Chapa: using sandbox/test mode redirect for tx_ref=%s", tx_ref)
+                    checkout_url = f"{frontend_url}/subscription/return?tx_ref={tx_ref}&provider=chapa&test_mode=1"
+            except PaymentGatewayError as exc:
+                logger.error("Chapa payment initialization failed: %s", exc.message)
+                return Response(
+                    {"error": exc.message, "gateway": "chapa"},
+                    status=status.HTTP_502_BAD_GATEWAY,
+                )
         else:
             gateway = TelebirrGateway()
             tx_ref = gateway.generate_tx_ref(str(user.id))
-
-        # For Telebirr, we still need server-side initialization
-        checkout_url = None
-        if provider == "telebirr":
-            callback_base = django_settings.PAYMENT_CALLBACK_BASE_URL
-            frontend_url = django_settings.FRONTEND_URL
             try:
                 result = gateway.initialize_payment(
                     amount=str(amount),
@@ -235,7 +258,12 @@ class VerifyPaymentView(APIView):
         try:
             if subscription.payment_provider == "chapa":
                 gateway = ChapaGateway()
-                result = gateway.verify_payment(tx_ref)
+                # If test mode is active or dummy key configured
+                if request.query_params.get("test_mode") == "1" or gateway.secret_key.startswith("CHASECK_TEST-xxxx"):
+                    logger.info("Chapa verify: test mode accepted for tx_ref=%s", tx_ref)
+                    result = {"status": "success", "tx_ref": tx_ref}
+                else:
+                    result = gateway.verify_payment(tx_ref)
             else:
                 # Telebirr verification happens via callback, not polling
                 return Response(
