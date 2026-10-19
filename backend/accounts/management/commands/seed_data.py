@@ -200,36 +200,36 @@ class Command(BaseCommand):
             # Teddy Afro (Album: Tikur Sew)
             ("song-001", "user-artist-1", "album-001", "Tikur Sew", Genre.MODERN, 300,
              f"{AUDIO_BASE}/songs/audio/a5e0fd539c5b4cb280ce74d0a769e499.mp3",
-             COVERS["teddy_afro"], 4500000),
+             COVERS["teddy_afro"], 0),
             ("song-002", "user-artist-1", "album-001", "Alhed Ale", Genre.MODERN, 240,
              f"{AUDIO_BASE}/songs/audio/76eda65892574d8c8ee04ffbfc02e886.mp3",
-             COVERS["teddy_afro"], 3200000),
+             COVERS["teddy_afro"], 0),
 
             # Aster Aweke (Album: Fikir)
             ("song-003", "user-artist-2", "album-002", "Ewedihalehu", Genre.TIZITA, 274,
              f"{AUDIO_BASE}/songs/audio/cdbe6fadba394f6d8b9bbe610b5c9d5f.mp3",
-             COVERS["aster_aweke"], 2800000),
+             COVERS["aster_aweke"], 0),
 
             # Mulatu Astatke (Album: Ethio-Jazz Voyage)
             ("song-004", "user-artist-3", "album-003", "Yekermo Sew", Genre.ETHIOJAZZ, 402,
              f"{AUDIO_BASE}/songs/audio/095f4d36a0664f3eba617b84cad7f7fb.m4a",
-             COVERS["mulatu_astatke"], 2100000),
+             COVERS["mulatu_astatke"], 0),
 
             # Tilahun Gessesse (Album: Yene Abeba)
             ("song-005", "user-artist-4", "album-004", "Yene Abeba", Genre.TIZITA, 438,
              f"{AUDIO_BASE}/songs/audio/59486fd93b424318a56202072702ff9b.m4a",
-             COVERS["tilahun_gessesse"], 5100000),
+             COVERS["tilahun_gessesse"], 0),
             ("song-006", "user-artist-4", "album-004", "Min Tebegn", Genre.AMBASSEL, 206,
              f"{AUDIO_BASE}/songs/audio/b855610ae5254ce492bdf87d0246de45.m4a",
-             COVERS["tilahun_gessesse"], 3400000),
+             COVERS["tilahun_gessesse"], 0),
 
             # Eyob Mekonnen (Album: Addis Vibe)
             ("song-007", "user-artist-5", "album-005", "Yemeskel Let", Genre.MODERN, 329,
              f"{AUDIO_BASE}/songs/audio/cb71a4f2b2584897adad4b034322d494.m4a",
-             COVERS["eyob_mekonnen"], 1800000),
+             COVERS["eyob_mekonnen"], 0),
             ("song-008", "user-artist-5", "album-005", "Addis Ababa", Genre.MODERN, 221,
              f"{AUDIO_BASE}/songs/audio/e4dbe98d7cc5422eab75424819072474.m4a",
-             COVERS["eyob_mekonnen"], 1200000),
+             COVERS["eyob_mekonnen"], 0),
         ]
 
         for key, artist_key, album_key, title, genre, duration, audio_url, cover_url, streams in song_data:
@@ -315,39 +315,5 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------ #
 
     def _create_history_and_analytics(self, users, songs):
-        """Create stream events & listening history for activity and charts."""
-        all_listeners = [u for u in users.values() if u.role == UserRole.LISTENER]
-        all_songs = list(songs.values())
-        now = timezone.now()
-
-        # Create recent ListeningHistory for each listener
-        for user in all_listeners:
-            user_songs = random.sample(all_songs, min(len(all_songs), 4))
-            for i, song in enumerate(user_songs):
-                listened_at = now - timedelta(hours=i * 5 + random.randint(1, 3))
-                lh, _ = ListeningHistory.objects.get_or_create(
-                    user=user,
-                    song=song,
-                    defaults={"listened_at": listened_at},
-                )
-
-        # Create StreamEvents over the past 6 months for monthly analytics
-        if StreamEvent.objects.count() < 100:
-            events = []
-            countries = ["ET", "US", "GB", "DE", "SE", "CA"]
-            for month_offset in range(6):
-                month_time = now - timedelta(days=month_offset * 30 + 5)
-                for song in all_songs:
-                    # Create 5-15 events per song per month
-                    event_count = random.randint(5, 12)
-                    for _ in range(event_count):
-                        user = random.choice(all_listeners)
-                        events.append(
-                            StreamEvent(
-                                song=song,
-                                user=user,
-                                streamed_at=month_time - timedelta(days=random.randint(0, 25)),
-                                country=random.choice(countries),
-                            )
-                        )
-            StreamEvent.objects.bulk_create(events)
+        """Clean start: all streaming analytics start from 0 real views."""
+        pass

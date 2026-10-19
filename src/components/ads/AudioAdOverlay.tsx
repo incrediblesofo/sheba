@@ -6,7 +6,7 @@
  * Auto-dismisses after a countdown or can be dismissed manually.
  */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   Typography,
@@ -36,6 +36,11 @@ const AudioAdOverlay: React.FC<AudioAdOverlayProps> = ({
 }) => {
   const [remaining, setRemaining] = useState(countdownSeconds);
   const navigate = useNavigate();
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!open) {
@@ -43,11 +48,12 @@ const AudioAdOverlay: React.FC<AudioAdOverlayProps> = ({
       return;
     }
 
+    setRemaining(countdownSeconds);
     const timer = setInterval(() => {
       setRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          onClose();
+          onCloseRef.current();
           return 0;
         }
         return prev - 1;
@@ -55,7 +61,7 @@ const AudioAdOverlay: React.FC<AudioAdOverlayProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [open, countdownSeconds, onClose]);
+  }, [open, countdownSeconds]);
 
   const handleUpgrade = useCallback(() => {
     onClose();

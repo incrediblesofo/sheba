@@ -93,21 +93,24 @@ const GlobalPlayer: React.FC = () => {
   // Mount the radio engine — silently extends queue when radioMode is on
   useRadioEngine();
 
-  // Ad interstitial state: show every 3 songs for free users
   const [songPlayCount, setSongPlayCount] = useState(0);
   const [showAd, setShowAd] = useState(false);
   const AD_INTERVAL = 3;
+
+  const handleCloseAd = useCallback(() => {
+    setShowAd(false);
+  }, []);
 
   /* ---- Sync play/pause ---- */
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
-    if (isPlaying) {
+    if (isPlaying && !showAd) {
       audio.play().catch(() => {});
     } else {
       audio.pause();
     }
-  }, [isPlaying, currentTrack]);
+  }, [isPlaying, currentTrack, showAd]);
 
   /* ---- Reset listen tracking on track change ---- */
   useEffect(() => {
@@ -123,18 +126,18 @@ const GlobalPlayer: React.FC = () => {
     }
   }, [songPlayCount, isPremium]);
 
-  /* ---- Record listen after 30 seconds + increment stream ---- */
+  /* ---- Record listen and increment stream view count after 3 seconds ---- */
   useEffect(() => {
-    if (hasRecordedListen || !currentTrack || !isPlaying) return;
-    if (progress >= 30) {
+    if (hasRecordedListen || !currentTrack || !isPlaying || showAd) return;
+    if (progress >= 3) {
       setHasRecordedListen(true);
-      // Fire and forget — don't block playback
+      // Increment live stream count on backend
       streamSong(currentTrack.id).catch(() => {});
       if (isAuthenticated) {
         recordListen(currentTrack.id).catch(() => {});
       }
     }
-  }, [progress, hasRecordedListen, currentTrack, isPlaying, streamSong, recordListen, isAuthenticated]);
+  }, [progress, hasRecordedListen, currentTrack, isPlaying, showAd, streamSong, recordListen, isAuthenticated]);
 
   /* ---- Sync volume ---- */
   useEffect(() => {
@@ -195,7 +198,7 @@ const GlobalPlayer: React.FC = () => {
       <QueueDrawer open={queueOpen} onClose={() => setQueueOpen(false)} />
 
       {/* Ad interstitial for free users */}
-      <AudioAdOverlay open={showAd} onClose={() => setShowAd(false)} />
+      <AudioAdOverlay open={showAd} onClose={handleCloseAd} />
 
       <audio
         ref={audioRef}
