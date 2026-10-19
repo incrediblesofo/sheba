@@ -25,7 +25,9 @@ dist-ssr
 
 # Environment variables
 .env
+.env.*
 backend/.env
+backend/.env.*
 
 # Python / Django
 backend/venv/
