@@ -38,12 +38,22 @@ def api_root(request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", api_root, name="root"),
     path("api/", api_root, name="api-root"),
+
+    # API routes with /api/ prefix
     path("api/auth/", include("accounts.urls")),
     path("api/users/", include("accounts.urls")),
     path("api/music/", include("music.urls")),
     path("api/subscriptions/", include("subscriptions.urls")),
     path("api/admin-dashboard/", include("admin_dashboard.urls")),
+
+    # Fallback routes without /api/ prefix (if Vercel rewrite strips /api/)
+    path("auth/", include("accounts.urls")),
+    path("users/", include("accounts.urls")),
+    path("music/", include("music.urls")),
+    path("subscriptions/", include("subscriptions.urls")),
+    path("admin-dashboard/", include("admin_dashboard.urls")),
 ]
 
 if settings.DEBUG:
