@@ -16,7 +16,29 @@ from accounts.models import ArtistProfile, Genre, ListenerProfile, User, UserRol
 from music.models import Album, Playlist, PlaylistSong, Song, SongStatus
 
 
-AUDIO_BASE = "https://www.soundhelix.com/examples/mp3"
+AUDIO_BASE = "https://owqqlnxqfcijptiivzyr.supabase.co/storage/v1/object/public/music"
+
+SUPABASE_AUDIO_TRACKS = [
+    f"{AUDIO_BASE}/songs/audio/76eda65892574d8c8ee04ffbfc02e886.mp3",
+    f"{AUDIO_BASE}/songs/audio/a5e0fd539c5b4cb280ce74d0a769e499.mp3",
+    f"{AUDIO_BASE}/songs/audio/a61eff964a794f9785b4851278631fa7.mp3",
+    f"{AUDIO_BASE}/songs/audio/cdbe6fadba394f6d8b9bbe610b5c9d5f.mp3",
+    f"{AUDIO_BASE}/songs/audio/095f4d36a0664f3eba617b84cad7f7fb.m4a",
+    f"{AUDIO_BASE}/songs/audio/1bde35cbbb7c4a3490cc7815f82825d5.m4a",
+    f"{AUDIO_BASE}/songs/audio/59486fd93b424318a56202072702ff9b.m4a",
+    f"{AUDIO_BASE}/songs/audio/b855610ae5254ce492bdf87d0246de45.m4a",
+    f"{AUDIO_BASE}/songs/audio/cb71a4f2b2584897adad4b034322d494.m4a",
+    f"{AUDIO_BASE}/songs/audio/e4dbe98d7cc5422eab75424819072474.m4a",
+]
+
+SUPABASE_COVERS = [
+    f"{AUDIO_BASE}/songs/covers/197aef8788b44bfda70b3aefa0cc503e.jpg",
+    f"{AUDIO_BASE}/songs/covers/6059a57b26094fd2aa1ace34524a720e.jpeg",
+    f"{AUDIO_BASE}/songs/covers/66bf43fc505d4ff68c6d0c8f6e43b596.jpeg",
+    f"{AUDIO_BASE}/songs/covers/701319f24c23448cb4295a92cc15e291.jpg",
+    f"{AUDIO_BASE}/songs/covers/7d7aea88b7c84143a3363ea2d9a5fd80.jpeg",
+    f"{AUDIO_BASE}/songs/covers/e8ded85717b64619b1bd6aef8274387d.jpg",
+]
 
 
 class Command(BaseCommand):
@@ -151,7 +173,7 @@ class Command(BaseCommand):
                 title=title,
                 artist=artists[artist_key],
                 defaults={
-                    "cover_image_url": f"https://picsum.photos/seed/{title.lower().replace(' ', '-')}/300/300",
+                    "cover_image_url": SUPABASE_COVERS[len(albums) % len(SUPABASE_COVERS)],
                     "release_date": datetime.strptime(release, "%Y-%m-%d").date(),
                     "genre": genre,
                     "description": desc,
@@ -190,8 +212,8 @@ class Command(BaseCommand):
                     "album": albums[album_key],
                     "genre": genre,
                     "duration": duration,
-                    "audio_file_url": f"{AUDIO_BASE}/SoundHelix-Song-{audio_num}.mp3",
-                    "cover_image_url": f"https://picsum.photos/seed/{title.lower().replace(' ', '')}/300/300",
+                    "audio_file_url": SUPABASE_AUDIO_TRACKS[(audio_num - 1) % len(SUPABASE_AUDIO_TRACKS)],
+                    "cover_image_url": SUPABASE_COVERS[(audio_num - 1) % len(SUPABASE_COVERS)],
                     "stream_count": streams,
                     "status": SongStatus.APPROVED,
                 },
