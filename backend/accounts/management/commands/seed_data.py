@@ -73,7 +73,7 @@ class Command(BaseCommand):
         self.stdout.write("Seeding playlists...")
         self._create_playlists(users, songs)
 
-        self.stdout.write(self.style.SUCCESS("✅ Database seeded successfully!"))
+        self.stdout.write(self.style.SUCCESS("Database seeded successfully!"))
 
     # ------------------------------------------------------------------ #
     #  Users                                                               #
