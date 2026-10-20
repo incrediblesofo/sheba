@@ -1,0 +1,1 @@
+import{Q as e,U as t,X as n}from"./Box-S-XmNk_F.js";var r=e(n()),i=t(),a=r.createContext();function o({value:e,...t}){return(0,i.jsx)(a.Provider,{value:e??!0,...t})}var s=()=>r.useContext(a)??!1;export{s as n,o as t};

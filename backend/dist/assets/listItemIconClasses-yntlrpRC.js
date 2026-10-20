@@ -1,0 +1,1 @@
+import{E as e,T as t}from"./Box-S-XmNk_F.js";function n(t){return e(`MuiListItemIcon`,t)}var r=t(`MuiListItemIcon`,[`root`,`alignItemsFlexStart`]);export{r as n,n as t};

@@ -154,6 +154,17 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Tell WhiteNoise to serve frontend files (index.html, favicon, etc.) directly at root
+WHITENOISE_ROOT = str(BASE_DIR / "dist") if (BASE_DIR / "dist").exists() else str(BASE_DIR.parent / "dist")
+
+STATICFILES_DIRS = [
+    d for d in [
+        BASE_DIR / "dist",
+        BASE_DIR.parent / "dist",
+    ] if d.exists()
+]
+
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",

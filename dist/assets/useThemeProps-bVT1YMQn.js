@@ -1,0 +1,1 @@
+import{A as e,w as t}from"./Box-S-XmNk_F.js";import{t as n}from"./getThemeProps-6_pk21Lw.js";var r=t();function i({props:t,name:r,defaultTheme:i,themeId:a}){let o=e(i);return a&&(o=o[a]||o),n({theme:o,name:r,props:t})}export{r as n,i as t};

@@ -1,0 +1,1 @@
+import{d as e}from"./ButtonBase-DqBvX_pX.js";import{n as t}from"./Portal-CfoAIdN1.js";import{n}from"./getActiveElement-CKw8PaiA.js";function r(e,t=166){let n;function r(...r){clearTimeout(n),n=setTimeout(()=>{e.apply(this,r)},t)}return r.clear=()=>{clearTimeout(n)},r}var i=r,a=t,o=n,s=e;export{r as a,i,o as n,a as r,s as t};

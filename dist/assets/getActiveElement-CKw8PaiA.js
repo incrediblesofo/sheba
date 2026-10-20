@@ -1,0 +1,1 @@
+import{n as e}from"./Portal-CfoAIdN1.js";function t(t){return e(t).defaultView||window}function n(e){let t=e.activeElement;for(;t?.shadowRoot?.activeElement!=null;)t=t.shadowRoot.activeElement;return t}var r=n;export{t as n,r as t};
